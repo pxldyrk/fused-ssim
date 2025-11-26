@@ -100,10 +100,12 @@ def configure_xpu():
 if os.environ.get('FORCE_CUDA', '0') == '1':
     log("FORCE_CUDA is set. Forcing CUDA compilation.")
     extension_type, extension_file, build_name, compiler_args, link_args, detected_arch = configure_cuda()
-if torch.cuda.is_available():
+elif torch.cuda.is_available():
     extension_type, extension_file, build_name, compiler_args, link_args, detected_arch = configure_cuda()
 elif torch.mps.is_available():
     extension_type, extension_file, build_name, compiler_args, link_args, detected_arch = configure_mps()
+elif hasattr(torch, 'xpu'):
+    extension_type, extension_file, build_name, compiler_args, link_args, detected_arch = configure_xpu()
 else:
     extension_type, extension_file, build_name, compiler_args, link_args, detected_arch = configure_cuda()
 
